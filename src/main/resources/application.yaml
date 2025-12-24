@@ -1,0 +1,6 @@
+spring:
+  application:
+    name: orchester-service
+# Server port
+server:
+  port: 8081
