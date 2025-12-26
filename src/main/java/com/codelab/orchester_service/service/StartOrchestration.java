@@ -24,7 +24,7 @@ public class StartOrchestration {
         String namespace = "default";
         String replId = id;
 
-        try (InputStream is = getClass().getClassLoader().getResourceAsStream("static/ser.yaml")) {
+        try (InputStream is = getClass().getClassLoader().getResourceAsStream("static/service.yaml")) {
             if (is == null) {
                 return "YAML file not found.";
             }
@@ -65,7 +65,7 @@ public class StartOrchestration {
     public String stopAndDeleteResources(String id) {
         String namespace = "default";
 
-        try (InputStream is = getClass().getClassLoader().getResourceAsStream("static/ser.yaml")) {
+        try (InputStream is = getClass().getClassLoader().getResourceAsStream("static/service.yaml")) {
             if (is == null) {
                 return "YAML file not found.";
             }
