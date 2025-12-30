@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: runner
-          image: darkway/codelab_service:v6
+          image: darkway/codelab_service:v24
           env:
             - name: R2_ACCESS_KEY
               valueFrom:
@@ -64,14 +64,14 @@ metadata:
   namespace: default
   annotations:
     nginx.ingress.kubernetes.io/enable-cors: "true"
-    nginx.ingress.kubernetes.io/cors-allow-origin: "http://myapp.local:3000"
+    nginx.ingress.kubernetes.io/cors-allow-origin: "http://localhost:3000"
     nginx.ingress.kubernetes.io/cors-allow-methods: "GET, POST, OPTIONS"
     nginx.ingress.kubernetes.io/cors-allow-headers: "DNT,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range"
     nginx.ingress.kubernetes.io/cors-allow-credentials: "true"
 spec:
   ingressClassName: nginx
   rules:
-    - host: myapp.local
+    - host: service_name.mylocal
       http:
         paths:
           - path: /
@@ -81,7 +81,7 @@ spec:
                 name: service_name
                 port:
                   number: 8080
-    - host: myapp.test
+    - host: service_name.test
       http:
         paths:
           - path: /

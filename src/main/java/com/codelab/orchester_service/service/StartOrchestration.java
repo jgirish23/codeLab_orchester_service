@@ -65,41 +65,55 @@ public class StartOrchestration {
     public String stopAndDeleteResources(String id) {
         String namespace = "default";
 
-        try (InputStream is = getClass().getClassLoader().getResourceAsStream("static/service.yaml")) {
+        try (InputStream is = getClass().getClassLoader()
+                .getResourceAsStream("static/service.yaml")) {
+
             if (is == null) {
                 return "YAML file not found.";
             }
 
             String rawYaml = new String(is.readAllBytes(), StandardCharsets.UTF_8);
+            rawYaml = rawYaml.replaceAll("service_name", id);
 
-            List<HasMetadata> resources = client.load(new ByteArrayInputStream(rawYaml.getBytes())).items();
+            List<HasMetadata> resources =
+                    client.load(new ByteArrayInputStream(rawYaml.getBytes())).items();
 
             if (resources == null || resources.isEmpty()) {
                 return "No resources found in the YAML.";
             }
 
             for (HasMetadata resource : resources) {
-                if (resource == null || resource.getMetadata() == null || resource.getKind() == null) {
-                    System.out.println("Skipping null or invalid resource.");
+                if (resource == null || resource.getMetadata() == null) {
                     continue;
                 }
 
-                String resourceNamespace = resource.getMetadata().getNamespace();
-                if (resourceNamespace == null || resourceNamespace.isEmpty()) {
-                    resourceNamespace = namespace;
-                }
+                String resourceNamespace =
+                        resource.getMetadata().getNamespace() != null
+                                ? resource.getMetadata().getNamespace()
+                                : namespace;
 
-                List<StatusDetails> deleted = client.resource(resource).inNamespace(resourceNamespace).delete();
-                System.out.println("Deleted " + resource.getKind() + ": " + resource.getMetadata().getName() + " = " + deleted);
+                List<StatusDetails> deleted =
+                        client.resource(resource)
+                                .inNamespace(resourceNamespace)
+                                .delete();
+
+                if (deleted == null || deleted.isEmpty()) {
+                    System.out.println("Not found: " +
+                            resource.getKind() + "/" + resource.getMetadata().getName());
+                } else {
+                    System.out.println("Deleted: " +
+                            resource.getKind() + "/" + resource.getMetadata().getName());
+                }
             }
 
-            return "All resources attempted to be deleted.";
+            return "Delete attempted for all resources.";
 
         } catch (Exception e) {
             e.printStackTrace();
             return "Failed to delete resources: " + e.getMessage();
         }
     }
+
 
 }
 
