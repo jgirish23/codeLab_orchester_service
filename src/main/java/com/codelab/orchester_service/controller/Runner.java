@@ -20,7 +20,13 @@ public class Runner {
     public ResponseEntity<?> startOrchester(@RequestParam String id, @RequestParam String language){
         String temp = startOrchestration.startOrchestrationFromYml(id, language);
         System.out.println(temp);
-//        startOrchestration.validateYamlWithKubectl("static/service.yaml");
         return ResponseEntity.ok("Filed saved Successfully");
+    }
+
+    @GetMapping("/stop")
+    public ResponseEntity<?> stopOrchester(@RequestParam String id){
+        String temp = startOrchestration.stopAndDeleteResources(id);
+        System.out.println(temp);
+        return ResponseEntity.ok("Stopped Successfully");
     }
 }
